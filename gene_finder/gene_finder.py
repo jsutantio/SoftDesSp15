@@ -1,12 +1,11 @@
 # -*- coding: utf-8 -*-
 """
-Created on Sun Feb  2 11:24:42 2014
-
-@author: YOUR NAME HERE
-
+1.31.14 SoftDes Spring 2015
+Gene Finder
+Jessica Sutantio
 """
 
-# you may find it useful to import these variables (although you are not required to use them)
+# Import variables
 from amino_acids import aa, codons, aa_table
 import random
 from load import load_seq
@@ -17,42 +16,82 @@ def shuffle_string(s):
     return ''.join(random.sample(s,len(s)))
 
 ### YOU WILL START YOUR IMPLEMENTATION FROM HERE DOWN ###
-
-
+# Returns the complementary nucleotide
 def get_complement(nucleotide):
-    """ Returns the complementary nucleotide
-
-        nucleotide: a nucleotide (A, C, G, or T) represented as a string
-        returns: the complementary nucleotide
+    """
+    nucleotide: a nucleotide (A, C, G, or T) represented as a string
+    returns: the complementary nucleotide
+    
+    ## DOCTEST
     >>> get_complement('A')
     'T'
+    >>> get_complement('T')
+    'A'
     >>> get_complement('C')
     'G'
+    >>> get_complement('G')
+    'C'
+    >>> get_complement(C)
+    'Not a valid nucleotide type.'
     """
-    # TODO: implement this
-    pass
 
+    if nucleotide == 'A':
+        return 'T'
+    if nucleotide == 'T':
+        return 'A'
+    if nucleotide == 'C':
+        return 'G'
+    if nucleotide == 'G':
+        return 'C'
+    else:
+        print 'Not a valid nucleotide type.'
+        # Include function that prevents rest of code from running
+
+# Computes the reverse complementary sequence of DNA for the specfied DNA sequence
 def get_reverse_complement(dna):
-    """ Computes the reverse complementary sequence of DNA for the specfied DNA
-        sequence
-    
-        dna: a DNA sequence represented as a string
-        returns: the reverse complementary DNA sequence represented as a string
+    """ 
+    dna: a DNA sequence represented as a string
+    returns: the reverse complementary DNA sequence represented as a string
+
+    ## DOCTEST
     >>> get_reverse_complement("ATGCCCGCTTT")
     'AAAGCGGGCAT'
     >>> get_reverse_complement("CCGCGTTCA")
     'TGAACGCGG'
     """
-    # TODO: implement this
-    pass
+    
+    """
+    reads the input and finds the complement of each nucleotide
+    outputs a list of strings of the indiv. nucleotides
+    """
+    length = len(dna)
+    sequence = []
+    for x in range(0,length):
+        nucleotide = dna[x]
+        # For ea. nucleotide, return its complement
+        complement = get_complement(nucleotide)
+        sequence.append(complement)
 
+    # for nucleotide in dna:
+    #     complement = get_complement(nucleotide)
+    #     sequence.append(complement)
+    
+    # Returns the reversed DNA sequence as an array of strings (NOT A STRING!!)
+    # print sequence
+    sequence.reverse()
+    return sequence
+
+"""
+Takes a DNA sequence that is assumed to begin with a start codon and returns
+the sequence up to but not including the first in frame stop codon.  If there
+is no in frame stop codon, returns the whole string.
+"""
 def rest_of_ORF(dna):
-    """ Takes a DNA sequence that is assumed to begin with a start codon and returns
-        the sequence up to but not including the first in frame stop codon.  If there
-        is no in frame stop codon, returns the whole string.
-        
-        dna: a DNA sequence
-        returns: the open reading frame represented as a string
+    """        
+    dna: a DNA sequence
+    returns: the open reading frame represented as a string
+    
+    ## DOCTEST
     >>> rest_of_ORF("ATGTGAA")
     'ATG'
     >>> rest_of_ORF("ATGAGATAGG")
