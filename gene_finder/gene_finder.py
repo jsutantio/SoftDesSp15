@@ -111,32 +111,23 @@ def rest_of_ORF(dna):
     >>> rest_of_ORF('ATGAGATAGG')
     ('ATGAGA', 2)
     >>> rest_of_ORF('ATGGAATTTGCCG')
-    'ATGGAATTTGCCG'
+    ('ATGGAATTTGCCG', 4)
     """
-
     triplets = triplet(dna)
     snippet = ''
 
     for x in range (0,triplets):
-        # startCodon = dna[:3]
         codon = dna[3*(x):3*(x+1)]
 
         if codon in ['TAG','TAA','TGA']:
             # print 'End of the line!'
             return snippet, x
-        # if codon == 'TAA':
-        #     # print 'End of the line!'
-        #     return snippet
-        # if codon == 'TGA':
-        #     # print 'End of the line!'
-        #     return snippet
         else:
             snippet = snippet + codon
             # print snippet
 
     # If no stop codon, return entire DNA sequence
-    return dna
-
+    return dna, triplets
 
 """ 
 Finds all non-nested open reading frames in the given DNA sequence and returns
@@ -149,30 +140,41 @@ def find_all_ORFs_oneframe(dna):
     """  
     dna: a DNA sequence
     returns: a list of non-nested ORFs
-    >>> find_all_ORFs_oneframe("ATGCATGAATGTAGATAGATGTGCCC")
+    >>> find_all_ORFs_oneframe('ATGCATGAATGTAGATAGATGTGCCC')
     ['ATGCATGAATGTAGA', 'ATGTGCCC']
     >>> find_all_ORFs_oneframe('TAAATGCATGAATAGTTT')
-    ['ATGCATGAA']
+    ['ATGCATGAA'] 
+    >>> find_all_ORFs_oneframe('TAAATGCATGAATAGTTTTAAATGCTGCGGTAATGA')
+    ['ATGCATGAA', 'ATGCTGCGG']
+    >>> find_all_ORFs_oneframe('TAGATGCCCATGCCCTAACGG')
+    ['ATGCCCATGCCC']
     """
 
     triplets = triplet(dna)
-    allORFs = []
 
-    for x in range(0,triplets):
+    allORFs = []
+    x = 0    
+
+    while x <= triplets:
+        # print 'triplets: ' + str(triplets)
         codon = dna[3*(x):3*(x+1)]
-        
+        print 'counter: ' + str(x)
+
         if codon == 'ATG':
-            # Finds a single ORF until the next stop codon
-            ORFsnippet = rest_of_ORF(dna[3*x:])
+            # Finds a single ORF until the next stop codon; ORF end location
+            ORFsnippet, endLocation = rest_of_ORF(dna[3*x:])
+            # print ORFsnippet
+            # print 'endLocation: ' + str(endLocation)
+            x = endLocation + x
+            # print 'Modified x: ' + str(x)
+            
             # Puts ORFs together in a list called allORFs
             allORFs.append(ORFsnippet)
-            # Need to know where the last codon left off
+            
+        x = x + 1
 
-        # else: 
-        # make this part the one that returns the entire dna sequence if no ORF is found
-
-# print find_all_ORFs_oneframe('TAAATGCATGAATAGTTT')        
-
+    return allORFs
+    
 
 def find_all_ORFs(dna):
     """ Finds all non-nested open reading frames in the given DNA sequence in all 3
@@ -201,7 +203,6 @@ def find_all_ORFs_both_strands(dna):
     # TODO: implement this
     pass
 
-
 def longest_ORF(dna):
     """ Finds the longest ORF on both strands of the specified DNA and returns it
         as a string
@@ -210,7 +211,6 @@ def longest_ORF(dna):
     """
     # TODO: implement this
     pass
-
 
 def longest_ORF_noncoding(dna, num_trials):
     """ Computes the maximum length of the longest ORF over num_trials shuffles
