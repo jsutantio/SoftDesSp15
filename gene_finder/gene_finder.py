@@ -31,8 +31,10 @@ def get_complement(nucleotide):
     'G'
     >>> get_complement('G')
     'C'
-    >>> get_complement(C)
-    'Not a valid nucleotide type.'
+    >>> get_complement('H')
+    Not a valid nucleotide type.
+    >>> get_complement(169)
+    Not a valid nucleotide type.
     """
 
     if nucleotide == 'A':
@@ -66,20 +68,20 @@ def get_reverse_complement(dna):
     """
     length = len(dna)
     sequence = []
-    for x in range(0,length):
-        nucleotide = dna[x]
-        # For ea. nucleotide, return its complement
-        complement = get_complement(nucleotide)
-        sequence.append(complement)
-
-    # for nucleotide in dna:
+    # for x in range(0,length):
+    #     nucleotide = dna[x]
+    #     # For ea. nucleotide, return its complement
     #     complement = get_complement(nucleotide)
     #     sequence.append(complement)
+
+    for nucleotide in dna:
+        complement = get_complement(nucleotide)
+        sequence.append(complement)
     
     # Returns the reversed DNA sequence as an array of strings (NOT A STRING!!)
-    # print sequence
     sequence.reverse()
-    return sequence
+    reverseSequence = ''.join(sequence)
+    return reverseSequence
 
 """
 Takes a DNA sequence that is assumed to begin with a start codon and returns
@@ -97,8 +99,27 @@ def rest_of_ORF(dna):
     >>> rest_of_ORF("ATGAGATAGG")
     'ATGAGA'
     """
-    # TODO: implement this
-    pass
+    # Determine the number of codons in the DNA sequence
+    length = len(dna)
+    triplets = length/3
+    snippet = ''
+
+    for x in range (0,triplets):
+        # startCodon = dna[:3]
+        codon = dna[3*(x):3*(x+1)]
+
+        if codon == 'TAG':
+            # print 'End of the line!'
+            return snippet
+        if codon == 'TAA':
+            # print 'End of the line!'
+            return snippet
+        if codon == 'TGA':
+            # print 'End of the line!'
+            return snippet
+        else:
+            snippet = snippet+codon
+            # print snippet
 
 def find_all_ORFs_oneframe(dna):
     """ Finds all non-nested open reading frames in the given DNA sequence and returns
