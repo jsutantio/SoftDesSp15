@@ -49,7 +49,10 @@ def get_complement(nucleotide):
         print 'Not a valid nucleotide type.'
         # Include function that prevents rest of code from running
 
-# Computes the reverse complementary sequence of DNA for the specfied DNA sequence
+"""
+Computes the reverse complementary sequence of DNA for the specfied 
+DNA sequence
+"""
 def get_reverse_complement(dna):
     """ 
     dna: a DNA sequence represented as a string
@@ -78,10 +81,19 @@ def get_reverse_complement(dna):
         complement = get_complement(nucleotide)
         sequence.append(complement)
     
-    # Returns the reversed DNA sequence as an array of strings (NOT A STRING!!)
+    # Returns the reversed DNA sequence and joins it into a string
     sequence.reverse()
     reverseSequence = ''.join(sequence)
     return reverseSequence
+
+"""
+Determines the number of codons in the DNA sequence provided.
+This ignores any extra nucleotides that do not fit in the triplet.
+"""
+def triplet(dna):
+    length = len(dna)
+    triplets = length/3
+    return triplets
 
 """
 Takes a DNA sequence that is assumed to begin with a start codon and returns
@@ -94,47 +106,73 @@ def rest_of_ORF(dna):
     returns: the open reading frame represented as a string
     
     ## DOCTEST
-    >>> rest_of_ORF("ATGTGAA")
-    'ATG'
-    >>> rest_of_ORF("ATGAGATAGG")
-    'ATGAGA'
+    >>> rest_of_ORF('ATGTGAA')
+    ('ATG', 1)
+    >>> rest_of_ORF('ATGAGATAGG')
+    ('ATGAGA', 2)
+    >>> rest_of_ORF('ATGGAATTTGCCG')
+    'ATGGAATTTGCCG'
     """
-    # Determine the number of codons in the DNA sequence
-    length = len(dna)
-    triplets = length/3
+
+    triplets = triplet(dna)
     snippet = ''
 
     for x in range (0,triplets):
         # startCodon = dna[:3]
         codon = dna[3*(x):3*(x+1)]
 
-        if codon == 'TAG':
+        if codon in ['TAG','TAA','TGA']:
             # print 'End of the line!'
-            return snippet
-        if codon == 'TAA':
-            # print 'End of the line!'
-            return snippet
-        if codon == 'TGA':
-            # print 'End of the line!'
-            return snippet
+            return snippet, x
+        # if codon == 'TAA':
+        #     # print 'End of the line!'
+        #     return snippet
+        # if codon == 'TGA':
+        #     # print 'End of the line!'
+        #     return snippet
         else:
-            snippet = snippet+codon
+            snippet = snippet + codon
             # print snippet
 
+    # If no stop codon, return entire DNA sequence
+    return dna
+
+
+""" 
+Finds all non-nested open reading frames in the given DNA sequence and returns
+them as a list.  This function should only find ORFs that are in the default
+frame of the sequence (i.e. they start on indices that are multiples of 3).
+By non-nested we mean that if an ORF occurs entirely within
+another ORF, it should not be included in the returned list of ORFs.
+"""
 def find_all_ORFs_oneframe(dna):
-    """ Finds all non-nested open reading frames in the given DNA sequence and returns
-        them as a list.  This function should only find ORFs that are in the default
-        frame of the sequence (i.e. they start on indices that are multiples of 3).
-        By non-nested we mean that if an ORF occurs entirely within
-        another ORF, it should not be included in the returned list of ORFs.
-        
-        dna: a DNA sequence
-        returns: a list of non-nested ORFs
+    """  
+    dna: a DNA sequence
+    returns: a list of non-nested ORFs
     >>> find_all_ORFs_oneframe("ATGCATGAATGTAGATAGATGTGCCC")
     ['ATGCATGAATGTAGA', 'ATGTGCCC']
+    >>> find_all_ORFs_oneframe('TAAATGCATGAATAGTTT')
+    ['ATGCATGAA']
     """
-    # TODO: implement this
-    pass
+
+    triplets = triplet(dna)
+    allORFs = []
+
+    for x in range(0,triplets):
+        codon = dna[3*(x):3*(x+1)]
+        
+        if codon == 'ATG':
+            # Finds a single ORF until the next stop codon
+            ORFsnippet = rest_of_ORF(dna[3*x:])
+            # Puts ORFs together in a list called allORFs
+            allORFs.append(ORFsnippet)
+            # Need to know where the last codon left off
+
+        # else: 
+        # make this part the one that returns the entire dna sequence if no ORF is found
+
+# print find_all_ORFs_oneframe('TAAATGCATGAATAGTTT')        
+
 
 def find_all_ORFs(dna):
     """ Finds all non-nested open reading frames in the given DNA sequence in all 3
@@ -214,6 +252,6 @@ def gene_finder(dna, threshold):
     # TODO: implement this
     pass
 
-if __name__ == "__main__":
-    import doctest
-    doctest.testmod()
+# if __name__ == "__main__":
+#     import doctest
+#     doctest.testmod()
