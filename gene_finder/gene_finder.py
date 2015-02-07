@@ -10,13 +10,6 @@ from amino_acids import aa, codons, aa_table
 import random
 from load import load_seq
 
-def shuffle_string(s):
-    """ Shuffles the characters in the input string
-        NOTE: this is a helper function, you do not have to modify this in any way """
-    return ''.join(random.sample(s,len(s)))
-
-### YOU WILL START YOUR IMPLEMENTATION FROM HERE DOWN ###
-# Returns the complementary nucleotide
 def get_complement(nucleotide):
     """
     nucleotide: a nucleotide (A, C, G, or T) represented as a string
@@ -32,9 +25,9 @@ def get_complement(nucleotide):
     >>> get_complement('G')
     'C'
     >>> get_complement('H')
-    Not a valid nucleotide type.
+    An invalid nucleotide type was used.
     >>> get_complement(169)
-    Not a valid nucleotide type.
+    An invalid nucleotide type was used.
     """
 
     if nucleotide == 'A':
@@ -47,7 +40,8 @@ def get_complement(nucleotide):
         return 'C'
     else:
         # Prevents rest of code from running
-        raise Exception('Not a valid nucleotide type.')
+        print 'An invalid nucleotide type was used.'
+        quit()
 
 """
 Computes the reverse complementary sequence of DNA for the specfied 
@@ -237,24 +231,49 @@ def find_all_ORFs_both_strands(dna):
 
     return allORFs
 
+""" 
+Finds the longest ORF on both strands of the specified DNA and returns it
+as a string
+"""
 def longest_ORF(dna):
-    """ Finds the longest ORF on both strands of the specified DNA and returns it
-        as a string
+    """
+    ## DOCTEST
     >>> longest_ORF("ATGCGAATGTAGCATCAAA")
     'ATGCTACATTCGCAT'
     """
-    # TODO: implement this
-    pass
+    
+    # Finds the greatest length of all the elements in the list from the func.
+    return max(find_all_ORFs_both_strands(dna), key=len)
 
+"""
+Shuffles the characters in the input string
+"""
+def shuffle_string(s):
+
+    return ''.join(random.sample(s,len(s)))
+
+"""
+Computes the maximum length of the longest ORF over num_trials shuffles
+of the specfied DNA sequence
+"""
 def longest_ORF_noncoding(dna, num_trials):
-    """ Computes the maximum length of the longest ORF over num_trials shuffles
-        of the specfied DNA sequence
-        
-        dna: a DNA sequence
-        num_trials: the number of random shuffles
-        returns: the maximum length longest ORF """
-    # TODO: implement this
-    pass
+    """        
+    dna: a DNA sequence
+    num_trials: the number of random shuffles
+    returns: the maximum length longest ORF
+    """
+    x = 1
+    while x <= num_trials:
+        DNA = shuffle_string(dna)
+        x += 1
+        print DNA  
+    return len(longest_ORF(DNA))
+
+"""
+Only works if the shuffling produces a sequence with a complete ORF.
+Need to find the function that is used to determine if there is an 
+ORF or not.
+"""
 
 def coding_strand_to_AA(dna):
     """ Computes the Protein encoded by a sequence of DNA.  This function
@@ -282,6 +301,8 @@ def gene_finder(dna):
     # TODO: implement this
     pass
 
-if __name__ == "__main__":
-    import doctest
-    doctest.testmod()
+# if __name__ == "__main__":
+#     import doctest
+#     doctest.testmod()
+
+print longest_ORF_noncoding("ATGCGAATGTAGCATCAAA", 4)
