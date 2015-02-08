@@ -25,9 +25,13 @@ def get_complement(nucleotide):
     >>> get_complement('G')
     'C'
     >>> get_complement('H')
-    An invalid nucleotide type was used.
+    Traceback (most recent call last):
+    ...
+    Exception: An invalid nucleotide type was used.
     >>> get_complement(169)
-    An invalid nucleotide type was used.
+    Traceback (most recent call last):
+    ...
+    Exception: An invalid nucleotide type was used.
     """
 
     if nucleotide == 'A':
@@ -40,8 +44,7 @@ def get_complement(nucleotide):
         return 'C'
     else:
         # Prevents rest of code from running
-        print 'An invalid nucleotide type was used.'
-        quit()
+        raise Exception('An invalid nucleotide type was used.')
 
 """
 Computes the reverse complementary sequence of DNA for the specfied 
@@ -119,11 +122,12 @@ def rest_of_ORF(dna):
         else:
             snippet = snippet + codon
             # print snippet
+            # this includes sequences that don't have a stop codon
 
     # If no stop codon, return entire DNA sequence
     return dna, triplets
 
-""" 
+"""
 Finds all non-nested open reading frames in the given DNA sequence and returns
 them as a list.  This function should only find ORFs that are in the default
 frame of the sequence (i.e. they start on indices that are multiples of 3).
@@ -166,8 +170,8 @@ def find_all_ORFs_oneframe(dna):
             
             # Puts ORFs together in a list called allORFs
             allORFs.append(ORFsnippet)
-            
-        x = x + 1
+
+        x += 1
 
     return allORFs
     
@@ -240,10 +244,19 @@ def longest_ORF(dna):
     ## DOCTEST
     >>> longest_ORF("ATGCGAATGTAGCATCAAA")
     'ATGCTACATTCGCAT'
+    >>> longest_ORF('AAAAAAAAAAGGGTTTT')
+    Traceback (most recent call last):
+    ...
+    Exception: No ORFs were found.
     """
     
     # Finds the greatest length of all the elements in the list from the func.
-    return max(find_all_ORFs_both_strands(dna), key=len)
+    
+    allORFs = find_all_ORFs_both_strands(dna)
+    if len(allORFs) >= 1:
+        return max(allORFs, key=len)
+    else:
+        raise Exception('No ORFs were found.')
 
 """
 Shuffles the characters in the input string
@@ -264,45 +277,53 @@ def longest_ORF_noncoding(dna, num_trials):
     """
     x = 1
     while x <= num_trials:
-        DNA = shuffle_string(dna)
+        sequence = shuffle_string(dna)
         x += 1
-        print DNA  
-    return len(longest_ORF(DNA))
+ 
+    return len(longest_ORF(sequence))
 
 """
-Only works if the shuffling produces a sequence with a complete ORF.
-Need to find the function that is used to determine if there is an 
-ORF or not.
+Computes the Protein encoded by a sequence of DNA.  This function
+does not check for start and stop codons (it assumes that the input
+DNA sequence represents an protein coding region).
 """
-
 def coding_strand_to_AA(dna):
-    """ Computes the Protein encoded by a sequence of DNA.  This function
-        does not check for start and stop codons (it assumes that the input
-        DNA sequence represents an protein coding region).
-        
-        dna: a DNA sequence represented as a string
-        returns: a string containing the sequence of amino acids encoded by the
-                 the input DNA fragment
-
-        >>> coding_strand_to_AA("ATGCGA")
-        'MR'
-        >>> coding_strand_to_AA("ATGCCCGCTTT")
-        'MPA'
     """
-    # TODO: implement this
-    pass
+    dna: a DNA sequence represented as a string
+    returns: a string containing the sequence of amino acids encoded by the
+    the input DNA fragment
 
+    ## DOCTEST
+    >>> coding_strand_to_AA("ATGCGA")
+    'MR'
+    >>> coding_strand_to_AA("ATGCCCGCTTT")
+    'MPA'
+    """
+
+    aa_sequence = ''
+    ORF = longest_ORF(dna)
+    triplets = triplet(ORF)
+
+    for x in range (0,triplets):
+        codon = ORF[3*(x):3*(x+1)]
+        # print codon
+        amino_acid = aa_table[codon]
+        # print amino_acid
+        aa_sequence += amino_acid
+    
+    return aa_sequence
+
+"""
+Returns the amino acid sequences that are likely coded by the specified dna
+"""    
 def gene_finder(dna):
-    """ Returns the amino acid sequences that are likely coded by the specified dna
-        
-        dna: a DNA sequence
-        returns: a list of all amino acid sequences coded by the sequence dna.
     """
-    # TODO: implement this
-    pass
+    dna: a DNA sequence
+    returns: a list of all amino acid sequences coded by the sequence dna.
+    """
+    threshold = longest_ORF_noncoding(dna, 1500)   
 
-# if __name__ == "__main__":
-#     import doctest
-#     doctest.testmod()
 
-print longest_ORF_noncoding("ATGCGAATGTAGCATCAAA", 4)
+if __name__ == "__main__":
+    import doctest
+    doctest.testmod()
