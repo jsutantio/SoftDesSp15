@@ -254,7 +254,9 @@ def longest_ORF(dna):
     
     allORFs = find_all_ORFs_both_strands(dna)
     if len(allORFs) >= 1:
-        return max(allORFs, key=len)
+        longest = max(allORFs, key=len)
+        # print 'longest ORF: ' + longest
+        return longest
     else:
         raise Exception('No ORFs were found.')
 
@@ -278,8 +280,10 @@ def longest_ORF_noncoding(dna, num_trials):
     x = 1
     while x <= num_trials:
         sequence = shuffle_string(dna)
+        # print sequence
         x += 1
- 
+    
+    # returns an int
     return len(longest_ORF(sequence))
 
 """
@@ -321,9 +325,25 @@ def gene_finder(dna):
     dna: a DNA sequence
     returns: a list of all amino acid sequences coded by the sequence dna.
     """
-    threshold = longest_ORF_noncoding(dna, 1500)   
+    # print 'length of dna sequence: ' + str(len(dna))
+    threshold = longest_ORF_noncoding(dna, 1500)
+    # print 'threshold: ' + str(threshold)
+    aa_sequence = []
+    allORFs = find_all_ORFs_both_strands(dna)
+    # print allORFs
+    
+    for ORF in allORFs:
+        # print 'ORF: ' + ORF
+        # print 'length of ORF: ' + str(len(ORF))
+        if len(ORF) > threshold:
+            aa_sequence.append(coding_strand_to_AA(ORF))
+            # print aa_sequence
 
+    return aa_sequence
 
-if __name__ == "__main__":
-    import doctest
-    doctest.testmod()
+load_seq('X73525.fa'
+# gene_finder()
+
+# if __name__ == "__main__":
+#     import doctest
+#     doctest.testmod()
