@@ -1,0 +1,14 @@
+"""
+2.8.15 SoftDes Spring 2015
+Gene Finder
+Jessica Sutantio
+"""
+
+Proteins in the Salmonella DNA:
+SpaO [Salmonella enterica]
+AU95 17210 [Providencia alcalifaciens]
+PRK08158
+translocation protein Q
+FliN
+type III secretion system protein [Escherichia coli]
+
