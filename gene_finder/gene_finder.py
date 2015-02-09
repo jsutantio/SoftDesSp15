@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-1.31.14 SoftDes Spring 2015
+1.31.15 SoftDes Spring 2015
 Gene Finder
 Jessica Sutantio
 """
@@ -341,8 +341,9 @@ def gene_finder(dna):
 
     return aa_sequence
 
-load_seq('X73525.fa'
-# gene_finder()
+dna = load_seq("./data/X73525.fa")
+
+print gene_finder(dna)
 
 # if __name__ == "__main__":
 #     import doctest
