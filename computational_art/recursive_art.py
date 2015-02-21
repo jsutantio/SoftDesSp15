@@ -74,12 +74,10 @@ def remap_interval(val, input_interval_start, input_interval_end, output_interva
         output_offset = 0 - output_interval_start
         val = scale*(output_interval_end+output_offset)
         return val - output_offset
-
-        # scale = float(val)/(input_interval_end - input_interval_start)
-        # return scale*(output_interval_start + output_interval_end)
-    # raise exception if val is not in interval
-    # else:
-    #     raise Exception('Value is not between input interval.')
+    if val == input_interval_start:
+        return output_interval_start
+    if val == input_interval_end:
+        return output_interval_end
 
 
 def color_map(val):
