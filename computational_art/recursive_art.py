@@ -2,6 +2,7 @@
 
 import random
 from PIL import Image
+from math import *
 
 
 def build_random_function(min_depth, max_depth):
@@ -33,8 +34,13 @@ def evaluate_random_function(f, x, y):
         >>> evaluate_random_function(["y"],0.1,0.02)
         0.02
     """
-    # TODO: implement this
-    pass
+    
+    if f == ["x"]:
+        return x
+    if f == ["y"]:
+        return y
+    # else:
+    #     raise Exception('Function neither has x or y functions.')
 
 
 def remap_interval(val, input_interval_start, input_interval_end, output_interval_start, output_interval_end):
@@ -60,8 +66,20 @@ def remap_interval(val, input_interval_start, input_interval_end, output_interva
         >>> remap_interval(5, 4, 6, 1, 2)
         1.5
     """
-    # TODO: implement this
-    pass
+
+    # check to see if val is in the interval
+    if (val > input_interval_start) and (val < input_interval_end):
+        input_offset = 0 - input_interval_start
+        scale = float(val+input_offset)/(input_interval_end+input_offset)
+        output_offset = 0 - output_interval_start
+        val = scale*(output_interval_end+output_offset)
+        return val - output_offset
+
+        # scale = float(val)/(input_interval_end - input_interval_start)
+        # return scale*(output_interval_start + output_interval_end)
+    # raise exception if val is not in interval
+    # else:
+    #     raise Exception('Value is not between input interval.')
 
 
 def color_map(val):
@@ -139,8 +157,8 @@ if __name__ == '__main__':
     # Create some computational art!
     # TODO: Un-comment the generate_art function call after you
     #       implement remap_interval and evaluate_random_function
-    #generate_art("myart.png")
+    generate_art("myart.png")
 
     # Test that PIL is installed correctly
     # TODO: Comment or remove this function call after testing PIL install
-    test_image("noise.png")
+    # test_image("noise.png")
