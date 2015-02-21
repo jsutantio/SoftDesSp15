@@ -4,6 +4,8 @@
 
 import random
 from PIL import Image
+from math import *
+from random import randint
 
 def build_random_function(min_depth, max_depth):
     """ Builds a random function of depth at least min_depth and depth
@@ -16,14 +18,30 @@ def build_random_function(min_depth, max_depth):
                  (see assignment writeup for details on the representation of
                  these functions)
     """
-    
-    for i in range(min_depth,max_depth)
-        if min_depth = 0:
-            return ['cos',['y']]
+
+    # Types of functions
+    s = []
+    s[1] = ['X',['a','b']]
+    s[2] = ['Y',['a','b']]
+    s[3] = ['prod',['a','b']]
+    s[4] = ['avg',['a','b']]
+    s[5] = ['cos_pi',['a']]
+    s[6] = ['sin_pi',['a']]
+
+    if min_depth = 0:
+        # randomly decide whether or not to continue with recursion
+        contine_recurse = choice(['YES','NO'])
+        if contine_recurse == 'NO':
+            return choice(['a','b'])
         else:
-            recurse = ['sin',[build_random_function(min_depth-1,max_depth-1)]]
-            f = [prod,recurse]
-            return f
+
+
+    else:
+        recurse = build_random_function(min_depth-1,max_depth-1)
+        
+        # randomly choose a type of function
+        f = choice(s)
+        return f
 
 
 def evaluate_random_function(f, x, y):
@@ -40,14 +58,46 @@ def evaluate_random_function(f, x, y):
         >>> evaluate_random_function(["y"],0.1,0.02)
         0.02
     """
-    
-    if f == ["x"]:
-        return x
-    if f == ["y"]:
-        return y
-    # else:
-    #     raise Exception('Function neither has x or y functions.')
 
+    for elem in f:
+        # base case
+        if elem == 'a':
+            return x
+        if elem == 'b':
+            return y
+        # evaluate the nested functions based on type
+        else:
+            if elem == 'X':
+                result = f[1]
+            if elem == 'Y':
+                result = f[2]
+            if elem == 'prod':
+                result = f[1]*f[2]
+            if elem == 'avg':
+                result = 0.5*(f[1]+f[2])
+            if elem == 'cos_pi':
+                result = cos(pi*f[1])
+            if elem == 'sin_pi':
+                result = sin(pi*f[1])
+            return evaluate_random_function(result,x,y)
+
+        # for sub_elem in elem:
+
+            # # base cases
+            # if sub_elem == 'X':
+            #     result = elem[1]
+            # if sub_elem == 'Y':
+            #     result = elem[1]
+            # if sub_elem == 'prod':
+            #     result = elem[1]*elem[2]
+            # if sub_elem == 'avg':
+            #     result = 0.5*(elem[1]+elem[2])
+            # if sub_elem == 'cos_pi':
+            #     result = cos(pi*elem[1])
+            # if sub_elem == 'sin_pi':
+            #     result = sin(pi*elem[1])
+
+            # function *= result
 
 def remap_interval(val, input_interval_start, input_interval_end, output_interval_start, output_interval_end):
     """ Given an input value in the interval [input_interval_start,
