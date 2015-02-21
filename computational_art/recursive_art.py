@@ -1,9 +1,9 @@
-""" TODO: Put your header comment here """
+# Computational Art
+# Jessica Sutantio
+# SoftDes Spring 2015
 
 import random
 from PIL import Image
-from math import *
-
 
 def build_random_function(min_depth, max_depth):
     """ Builds a random function of depth at least min_depth and depth
@@ -16,8 +16,14 @@ def build_random_function(min_depth, max_depth):
                  (see assignment writeup for details on the representation of
                  these functions)
     """
-    # TODO: implement this
-    pass
+    
+    for i in range(min_depth,max_depth)
+        if min_depth = 0:
+            return ['cos',['y']]
+        else:
+            recurse = ['sin',[build_random_function(min_depth-1,max_depth-1)]]
+            f = [prod,recurse]
+            return f
 
 
 def evaluate_random_function(f, x, y):
@@ -128,9 +134,9 @@ def generate_art(filename, x_size=350, y_size=350):
         x_size, y_size: optional args to set image dimensions (default: 350)
     """
     # Functions for red, green, and blue channels - where the magic happens!
-    red_function = ["x"]
-    green_function = ["y"]
-    blue_function = ["x"]
+    red_function = [build_random_function(7,9)]
+    green_function = [build_random_function(7,9)]
+    blue_function = [build_random_function(7,9)]
 
     # Create image and loop over all pixels
     im = Image.new("RGB", (x_size, y_size))
