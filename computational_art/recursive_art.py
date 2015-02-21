@@ -5,7 +5,7 @@
 import random
 from PIL import Image
 from math import *
-from random import randint
+from random import *
 
 def build_random_function(min_depth, max_depth):
     """ Builds a random function of depth at least min_depth and depth
@@ -19,30 +19,33 @@ def build_random_function(min_depth, max_depth):
                  these functions)
     """
 
-    # Types of functions
-    s = []
-    s[1] = ['X',['a','b']]
-    s[2] = ['Y',['a','b']]
-    s[3] = ['prod',['a','b']]
-    s[4] = ['avg',['a','b']]
-    s[5] = ['cos_pi',['a']]
-    s[6] = ['sin_pi',['a']]
+        # single input functions
+    t = [['cos_pi'],['sin_pi']]
 
-    if min_depth = 0:
+    # dual input functions
+    s = [['X'],['Y'],['prod'],['avg'],['max']]
+
+    if max_depth == 0:
+        return choice([['a'],['b']])
+    if min_depth <= 0:
         # randomly decide whether or not to continue with recursion
         contine_recurse = choice(['YES','NO'])
         if contine_recurse == 'NO':
-            return choice(['a','b'])
+            return choice([['a'],['b']])
         else:
-
+            return build_random_function(min_depth-1,max_depth-1)
 
     else:
-        recurse = build_random_function(min_depth-1,max_depth-1)
-        
-        # randomly choose a type of function
-        f = choice(s)
-        return f
-
+        function_type = choice(['one input','two input'])
+        if function_type == 'one input':
+            function = choice(t)
+            function.append(build_random_function(min_depth-1,max_depth-1))
+            return function
+        else:
+            function = choice(s)
+            function.append(build_random_function(min_depth-1,max_depth-1))
+            function.append(build_random_function(min_depth-1,max_depth-1))
+            return function
 
 def evaluate_random_function(f, x, y):
     """ Evaluate the random function f with inputs x,y
@@ -53,17 +56,17 @@ def evaluate_random_function(f, x, y):
         y: the value of y to be used to evaluate the function
         returns: the function value
 
-        >>> evaluate_random_function(["x"],-0.5, 0.75)
+        >>> evaluate_random_function(['a'],-0.5, 0.75)
         -0.5
-        >>> evaluate_random_function(["y"],0.1,0.02)
+        >>> evaluate_random_function(['b'],0.1,0.02)
         0.02
     """
 
     for elem in f:
         # base case
-        if elem == 'a':
+        if elem == ['a']:
             return x
-        if elem == 'b':
+        if elem == ['b']:
             return y
         # evaluate the nested functions based on type
         else:
@@ -211,7 +214,8 @@ if __name__ == '__main__':
     # Create some computational art!
     # TODO: Un-comment the generate_art function call after you
     #       implement remap_interval and evaluate_random_function
-    generate_art("myart.png")
+    # generate_art("myart.png")
+    print build_random_function(2,3)
 
     # Test that PIL is installed correctly
     # TODO: Comment or remove this function call after testing PIL install
