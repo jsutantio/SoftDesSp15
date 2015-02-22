@@ -21,6 +21,7 @@ def build_random_function(min_depth, max_depth):
 
         # single input functions
     t = [['cos_pi'],['sin_pi'],['exp']]
+    t = [['exp']]
 
     # dual input functions
     s = [['X'],['Y'],['prod'],['avg'],['max']]
@@ -69,18 +70,16 @@ def evaluate_random_function(f, x, y):
     """
 
     elem = f[0]
-
     # base case
     if elem == 'a':
         return x
     if elem == 'b':
-
         return y
+    
     # evaluate the nested functions based on type
     else:
         # shorthand for recursion
-        g = lambda funct: evaluate_random_function(funct,x,y)
-        
+        g = lambda funct: evaluate_random_function(funct,x,y) 
         if elem == 'X':
             return g(f[1])
         if elem == 'Y':
@@ -123,6 +122,7 @@ def remap_interval(val, input_interval_start, input_interval_end, output_interva
     """
 
     # check to see if val is in the interval
+    # print 'val given to remap_interval: ' + str(val)
     if (val > input_interval_start) and (val < input_interval_end):
         input_offset = 0 - input_interval_start
         scale = float(val+input_offset)/(input_interval_end+input_offset)
@@ -152,11 +152,13 @@ def color_map(val):
         191
     """
     # NOTE: This relies on remap_interval, which you must provide
+    # print 'val given to color_map:' + str(val)
     color_code = remap_interval(val, -1, 1, 0, 255)
+    # print 'color_code:' + str(color_code)
     return int(color_code)
 
 
-def test_image(filename, x_size=350, y_size=350):
+def test_image(filename, x_size=600, y_size=350):
     """ Generate test image with random pixels and save as an image file.
 
         filename: string filename for image (should be .png)
@@ -176,16 +178,17 @@ def test_image(filename, x_size=350, y_size=350):
     im.save(filename)
 
 
-def generate_art(filename, x_size=350, y_size=350):
+def generate_art(filename, x_size=500, y_size=500):
     """ Generate computational art and save as an image file.
 
         filename: string filename for image (should be .png)
         x_size, y_size: optional args to set image dimensions (default: 350)
     """
     # Functions for red, green, and blue channels - where the magic happens!
-    red_function = [build_random_function(7,9)]
-    green_function = [build_random_function(7,9)]
-    blue_function = [build_random_function(7,9)]
+    red_function = build_random_function(8,15)
+    # print red_function
+    green_function = build_random_function(9,10)
+    blue_function = build_random_function(10,16)
 
     # Create image and loop over all pixels
     im = Image.new("RGB", (x_size, y_size))
@@ -193,7 +196,9 @@ def generate_art(filename, x_size=350, y_size=350):
     for i in range(x_size):
         for j in range(y_size):
             x = remap_interval(i, 0, x_size, -1, 1)
+            # print 'x: ' +str(x)
             y = remap_interval(j, 0, y_size, -1, 1)
+            # print 'y: ' +str(y)
             pixels[i, j] = (
                     color_map(evaluate_random_function(red_function, x, y)),
                     color_map(evaluate_random_function(green_function, x, y)),
@@ -207,12 +212,10 @@ if __name__ == '__main__':
     import doctest
     doctest.testmod()
 
-    # Create some computational art!
-    # TODO: Un-comment the generate_art function call after you
-    #       implement remap_interval and evaluate_random_function
-    generate_art("myart.png")
+    generate_art("example4.png")
     
-
-    # Test that PIL is installed correctly
-    # TODO: Comment or remove this function call after testing PIL install
-    # test_image("noise.png")
+    # h = build_random_function(4,6)
+    # print h
+    # p = evaluate_random_function(h,0,0)
+    # print p
+    # print color_map(p)
