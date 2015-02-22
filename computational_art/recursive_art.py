@@ -82,22 +82,21 @@ def evaluate_random_function(f, x, y):
         g = lambda funct: evaluate_random_function(funct,x,y)
         
         if elem == 'X':
-            result = g(f[1])
+            return g(f[1])
         if elem == 'Y':
-            result = g(f[2])
+            return g(f[2])
         if elem == 'prod':
-            result = g(f[1])*g(f[2])
+            return g(f[1])*g(f[2])
         if elem == 'avg':
-            result = 0.5*(g(f[1])+g(f[2]))
+            return 0.5*(g(f[1])+g(f[2]))
         if elem == 'cos_pi':
-            result = cos(pi*g(f[1]))
+            return cos(pi*g(f[1]))
         if elem == 'sin_pi':
-            result = sin(pi*g(f[1]))
+            return sin(pi*g(f[1]))
         if elem == 'exp':
-            result = 1.0/(1+exp(-g(f[1])))
+            return 1.0/(1+exp(-g(f[1])))
         if elem == 'max':
-            result = max(g(f[1]),g(f[2]))
-        return result
+            return max(g(f[1]),g(f[2]))
 
 def remap_interval(val, input_interval_start, input_interval_end, output_interval_start, output_interval_end):
     """ Given an input value in the interval [input_interval_start,
