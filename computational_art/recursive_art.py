@@ -20,7 +20,7 @@ def build_random_function(min_depth, max_depth):
     """
 
         # single input functions
-    t = [['cos_pi'],['sin_pi']]
+    t = [['cos_pi'],['sin_pi'],['exp']]
 
     # dual input functions
     s = [['X'],['Y'],['prod'],['avg'],['max']]
@@ -60,47 +60,44 @@ def evaluate_random_function(f, x, y):
         -0.5
         >>> evaluate_random_function(['b'],0.1,0.02)
         0.02
+        >>> evaluate_random_function(['cos_pi',['b']],0.45,0.8)
+        -0.8090169943749473
+        >>> evaluate_random_function(['prod',['sin_pi',['b']],['avg',['a'],['b']]],-.01,.9)
+        0.13751256249685165
+        >>> evaluate_random_function(['max',['cos_pi',['b']],['avg',['a'],['a']]],-0.3,0)
+        1.0
     """
 
-    for elem in f:
-        # base case
-        if elem == ['a']:
-            return x
-        if elem == ['b']:
-            return y
-        # evaluate the nested functions based on type
-        else:
-            if elem == 'X':
-                result = f[1]
-            if elem == 'Y':
-                result = f[2]
-            if elem == 'prod':
-                result = f[1]*f[2]
-            if elem == 'avg':
-                result = 0.5*(f[1]+f[2])
-            if elem == 'cos_pi':
-                result = cos(pi*f[1])
-            if elem == 'sin_pi':
-                result = sin(pi*f[1])
-            return evaluate_random_function(result,x,y)
+    elem = f[0]
 
-        # for sub_elem in elem:
+    # base case
+    if elem == 'a':
+        return x
+    if elem == 'b':
 
-            # # base cases
-            # if sub_elem == 'X':
-            #     result = elem[1]
-            # if sub_elem == 'Y':
-            #     result = elem[1]
-            # if sub_elem == 'prod':
-            #     result = elem[1]*elem[2]
-            # if sub_elem == 'avg':
-            #     result = 0.5*(elem[1]+elem[2])
-            # if sub_elem == 'cos_pi':
-            #     result = cos(pi*elem[1])
-            # if sub_elem == 'sin_pi':
-            #     result = sin(pi*elem[1])
-
-            # function *= result
+        return y
+    # evaluate the nested functions based on type
+    else:
+        # shorthand for recursion
+        g = lambda funct: evaluate_random_function(funct,x,y)
+        
+        if elem == 'X':
+            result = g(f[1])
+        if elem == 'Y':
+            result = g(f[2])
+        if elem == 'prod':
+            result = g(f[1])*g(f[2])
+        if elem == 'avg':
+            result = 0.5*(g(f[1])+g(f[2]))
+        if elem == 'cos_pi':
+            result = cos(pi*g(f[1]))
+        if elem == 'sin_pi':
+            result = sin(pi*g(f[1]))
+        if elem == 'exp':
+            result = 1.0/(1+exp(-g(f[1])))
+        if elem == 'max':
+            result = max(g(f[1]),g(f[2]))
+        return result
 
 def remap_interval(val, input_interval_start, input_interval_end, output_interval_start, output_interval_end):
     """ Given an input value in the interval [input_interval_start,
@@ -214,8 +211,8 @@ if __name__ == '__main__':
     # Create some computational art!
     # TODO: Un-comment the generate_art function call after you
     #       implement remap_interval and evaluate_random_function
-    # generate_art("myart.png")
-    print build_random_function(2,3)
+    generate_art("myart.png")
+    
 
     # Test that PIL is installed correctly
     # TODO: Comment or remove this function call after testing PIL install
