@@ -21,7 +21,6 @@ def build_random_function(min_depth, max_depth):
 
         # single input functions
     t = [['cos_pi'],['sin_pi'],['exp']]
-    t = [['exp']]
 
     # dual input functions
     s = [['X'],['Y'],['prod'],['avg'],['max']]
@@ -37,7 +36,7 @@ def build_random_function(min_depth, max_depth):
             return build_random_function(min_depth-1,max_depth-1)
 
     else:
-        function_type = choice(['one input','two input'])
+        function_type = choice(['one input','two input','two input'])
         if function_type == 'one input':
             function = choice(t)
             function.append(build_random_function(min_depth-1,max_depth-1))
@@ -187,8 +186,8 @@ def generate_art(filename, x_size=500, y_size=500):
     # Functions for red, green, and blue channels - where the magic happens!
     red_function = build_random_function(8,15)
     # print red_function
-    green_function = build_random_function(9,10)
-    blue_function = build_random_function(10,16)
+    green_function = build_random_function(10,15)
+    blue_function = build_random_function(14,16)
 
     # Create image and loop over all pixels
     im = Image.new("RGB", (x_size, y_size))
@@ -212,7 +211,7 @@ if __name__ == '__main__':
     import doctest
     doctest.testmod()
 
-    generate_art("example4.png")
+    generate_art("example5.png")
     
     # h = build_random_function(4,6)
     # print h
