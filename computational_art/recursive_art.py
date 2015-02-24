@@ -47,6 +47,8 @@ def build_random_function(min_depth, max_depth):
             function.append(build_random_function(min_depth-1,max_depth-1))
             return function
 
+    #A less convoluted way to do it that I thought of but didn't have the time to tell you: Have one list of functions formatted like [ [cos_pi,place_holder], [X,place_holder_one,place_holder_two] ...]. Then choose any function from the list, and write a loop: for i in range(1,len(func)): func[i] = build_random_function(...). This will allow you to create functions that take any number of inputs with almost no code rewriting.
+
 def evaluate_random_function(f, x, y):
     """ Evaluate the random function f with inputs x,y
         Representation of the function f is defined in the assignment writeup
@@ -70,14 +72,15 @@ def evaluate_random_function(f, x, y):
 
     elem = f[0]
     # base case
-    if elem == 'a':
+    if elem == 'a': #You don't need to separate this base case from the other if statements. You could delete line 81 and just have a huge chunk of if statments.
         return x
-    if elem == 'b':
+    if elem == 'b': #A style thing: use elif when the cases are mutually excusive, instead of if. This makes it clear to a reader that you only expect one of these if statements to be true
         return y
     
     # evaluate the nested functions based on type
     else:
         # shorthand for recursion
+        # clever!
         g = lambda funct: evaluate_random_function(funct,x,y) 
         if elem == 'X':
             return g(f[1])
@@ -128,6 +131,7 @@ def remap_interval(val, input_interval_start, input_interval_end, output_interva
         output_offset = 0 - output_interval_start
         val = scale*(output_interval_end+output_offset)
         return val - output_offset
+    # did you add these statements checking val because this function won't work with certain inputs? It seemed to run fine without these if statements. If there is a case where these statements are nessecary, you should add a doctest that shows that case!
     if val == input_interval_start:
         return output_interval_start
     if val == input_interval_end:
@@ -211,7 +215,7 @@ if __name__ == '__main__':
     import doctest
     doctest.testmod()
 
-    generate_art("example5.png")
+    #generate_art("example5.png")
     
     # h = build_random_function(4,6)
     # print h
