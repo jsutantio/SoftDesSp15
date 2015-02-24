@@ -81,6 +81,8 @@ def get_reverse_complement(dna):
     # Returns the reversed DNA sequence and joins it into a string
     sequence.reverse()
     reverseSequence = ''.join(sequence)
+
+    #could initialize sequence to be an empty string intead, and just do sequence += complement, to avoid having to convert from a list to a string.
     return reverseSequence
 
 """
@@ -112,7 +114,8 @@ def rest_of_ORF(dna):
     """
     triplets = triplet(dna)
     snippet = ''
-
+    #you can just do range(0,triplets,3) to increment x by 3.
+    #use i or j as counter variables instead of x. 
     for x in range (0,triplets):
         codon = dna[3*(x):3*(x+1)]
 
@@ -158,6 +161,7 @@ def find_all_ORFs_oneframe(dna):
     while x <= triplets:
         # print 'triplets: ' + str(triplets)
         codon = dna[3*(x):3*(x+1)]
+        #could increment x by 3 at a time to avoid having to do this multiplication.
         # print 'counter: ' + str(x)
 
         if codon == 'ATG':
@@ -204,6 +208,7 @@ def find_all_ORFs(dna):
     # Offset the DNA sequence by 2
     def two_offset(dna):
         return dna[2:]
+    #stylistically, it might not make as much sense to have one_offset and two_offset as functions. You can assume that programmers will see [1:] and [2:] and know what it's doing. Good thought to make it more readable though.
 
     dna2 = two_offset(dna)   
     allORFs2 = find_all_ORFs_oneframe(dna2)
@@ -259,6 +264,7 @@ def longest_ORF(dna):
         return longest
     else:
         raise Exception('No ORFs were found.')
+        #instead of raising an exception, it could make sense to return an empty string instead. 
 
 """
 Shuffles the characters in the input string
@@ -282,6 +288,7 @@ def longest_ORF_noncoding(dna, num_trials):
         sequence = shuffle_string(dna)
         # print sequence
         x += 1
+    #hm, the assignment's meaning may not have been clear. You were meant to get the longest_ORF from each time the sequence was shuffled, and then choose the longest ORF from that list of longest ORFS. This probably gave you a very low cutoff.
     
     # returns an int
     return len(longest_ORF(sequence))
@@ -308,7 +315,7 @@ def coding_strand_to_AA(dna):
     ORF = longest_ORF(dna)
     triplets = triplet(ORF)
 
-    for x in range (0,triplets):
+    for x in range (0,triplets): #Can use range(0,triplets,3)
         codon = ORF[3*(x):3*(x+1)]
         # print codon
         amino_acid = aa_table[codon]
@@ -341,6 +348,7 @@ def gene_finder(dna):
 
     return aa_sequence
 
+#try to put code that you want to run under the if __name__ == "__main__" function. This stops your code from running unpredictable stuff when you import it into another python file.
 dna = load_seq("./data/X73525.fa")
 
 print gene_finder(dna)

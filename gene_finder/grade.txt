@@ -1,0 +1,3 @@
+Functionality: 4.5/5, main issue was with the longest_ORF_noncoding function.
+Documentation: 5/5, Nice docstring tests. Would have liked to see more BLAST search results.
+Style: 5/5, Nice job! Just make sure to try to make use of range(start,end,increment), and avoid writing functions that don't encapsulate/do much.
