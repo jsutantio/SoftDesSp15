@@ -10,14 +10,16 @@ from os import getcwd, chdir, listdir
 import string
 
 file_names = sorted(listdir('Therapy_Archives/'))
-outputfile = open('all_rants.txt','w')
-week = ['sun','mon','tue','wed','thu','fri','sat']
-year = ['jan','feb','mar','apr','may','jun','jul','aug','sep','oct','nov','dec']
-ranting = False
+
 
 
 ## combines all the archives and filters for only the essential text
 def omit_crap(file_names):
+	outputfile = open('all_rants.txt','w')
+	week = ['sun','mon','tue','wed','thu','fri','sat']
+	year = ['jan','feb','mar','apr','may','jun','jul','aug','sep','oct','nov','dec']
+	ranting = False
+
 	for archive in file_names:
 		for line in open('Therapy_Archives/' + archive):
 			# change all letters to lowercase
@@ -82,25 +84,18 @@ def word_freq():
 
 ## determine the most frequent words that are noteworthy
 def rants(freq_dict):
-	# for word in range(:100)
-	pass
+	# remove annoying words that didn't get filtered
+	del freq_dict['lists.olin.edu']
+	# sort the dictionary by most to least frequent
+	ordered_freq_dict = sorted(freq_dict, key=freq_dict.__getitem__, reverse=True)
+	# omit the boring helping words (ex. 'I', 'to', 'a', etc.)
+	rants = ordered_freq_dict[230:300]		# stops at "after"
+	return rants	
 
 omit_crap(file_names)
 word_freq()
 freq_dict = word_freq()
-# print freq_dict
-ordered_freq_dict = sorted(freq_dict, key=freq_dict.__getitem__, reverse=True)
-# print ordered_freq_dict
-print ordered_freq_dict[:200]
-# number of words: 4081
-
-
-# omit the common words (ex. 'the', 'a', 'an', 'what', 'when')
-	# try to find a list online
-	# or do not output the first 100 most frequent words
-	# toggle the max number until something interesting comes out
-# find the words with most count
-
+print rants(freq_dict)
 
 # something visual to show LOUDEST RANTS
 	# output text of various sizes
