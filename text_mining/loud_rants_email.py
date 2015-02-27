@@ -87,7 +87,7 @@ def rants(freq_dict):
 	# sort the dictionary by most to least frequent
 	ordered_freq_dict = sorted(freq_dict, key=freq_dict.__getitem__, reverse=True)
 	# omit the boring helping words (ex. 'I', 'to', 'a', etc.)
-	rants = ordered_freq_dict[230:240]		# stops at "after"
+	rants = ordered_freq_dict[230:250]		# stops at "after"
 	return rants	
 
 
@@ -98,9 +98,13 @@ def speak(rant):
 	# retrieves an mp3 file for every word in the list
 	for word in rant:
 		count += 1
-		url = 'http://tts-api.com/tts.mp3?q=' + word +'&return_url=1'
+		# use text to speech api to generate mp3 for each word
+		url = 'http://tts-api.com/tts.mp3?q=' + word
+		# get true url
+		real_url = urllib.urlopen(url)
+		url = real_url.geturl()
 		rant_word = urllib.URLopener()
-		rant_word.retrieve(url,'Rants/rant_word' + str(count) + '.mp3')
+		rant_word.retrieve(url,'Rants/rant_word'+str(count)+'_'+word+'.mp3')
 
 
 omit_crap(file_names)
@@ -108,15 +112,3 @@ word_freq()
 freq_dict = word_freq()
 rant = rants(freq_dict)
 speak(rant)
-
-# something visual to show LOUDEST RANTS
-	# output text of various sizes
-	# most frequent = bigger = louder
-	# least frequent = smaller = meh
-
-# something audio to show LOUDEST RANTS
-	# output reading of word of various volume
-	# most frequent = louder
-	# least frequent = quieter
-	# use howjsay.com
-
