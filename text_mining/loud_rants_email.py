@@ -6,15 +6,9 @@
 reads emails from Olin's public mailing list, Therapy, and outputs the most popular terms
 """
 
-# from shutil import *
 from os import getcwd, chdir, listdir
 import string
 
-# change directories
-# chdir('Therapy_Archives/')
-# path = getcwd()
-
-# open the files and put them all in one file: all_rants.txt
 file_names = sorted(listdir('Therapy_Archives/'))
 outputfile = open('all_rants.txt','w')
 week = ['sun','mon','tue','wed','thu','fri','sat']
@@ -22,7 +16,7 @@ year = ['jan','feb','mar','apr','may','jun','jul','aug','sep','oct','nov','dec']
 ranting = False
 
 
-
+## combines all the archives and filters for only the essential text
 def omit_crap(file_names):
 	for archive in file_names:
 		for line in open('Therapy_Archives/' + archive):
@@ -66,9 +60,8 @@ def omit_crap(file_names):
 			if ranting:
 				outputfile.write(line)
 
-omit_crap(file_names)
 
-# count the frequency of words in the text
+## count the frequency of words in the text
 def word_freq():
 	freq_dict = {}
 	for line in open('all_rants.txt'):
@@ -84,15 +77,24 @@ def word_freq():
 			else:
 				freq_dict[word] = 1
 
+	return freq_dict
 
-# word_freq('DI"ana. is looki"ng! at the <screen.')
+
+## determine the most frequent words that are noteworthy
+def rants(freq_dict):
+	# for word in range(:100)
+	pass
+
+omit_crap(file_names)
+word_freq()
+freq_dict = word_freq()
+# print freq_dict
+ordered_freq_dict = sorted(freq_dict, key=freq_dict.__getitem__, reverse=True)
+# print ordered_freq_dict
+print ordered_freq_dict[:200]
+# number of words: 4081
 
 
-# turn everything into lower case
-# recognize the subject of the email
-# recognize the body of the email
-# recognize repeat headers and body text
-# create dictionary to count the words in the email
 # omit the common words (ex. 'the', 'a', 'an', 'what', 'when')
 	# try to find a list online
 	# or do not output the first 100 most frequent words
