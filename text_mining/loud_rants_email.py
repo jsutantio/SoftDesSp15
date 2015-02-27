@@ -8,11 +8,9 @@ reads emails from Olin's public mailing list, Therapy, and outputs the most popu
 
 from os import getcwd, chdir, listdir
 import string
+import urllib
 
 file_names = sorted(listdir('Therapy_Archives/'))
-
-
-
 ## combines all the archives and filters for only the essential text
 def omit_crap(file_names):
 	outputfile = open('all_rants.txt','w')
@@ -89,13 +87,27 @@ def rants(freq_dict):
 	# sort the dictionary by most to least frequent
 	ordered_freq_dict = sorted(freq_dict, key=freq_dict.__getitem__, reverse=True)
 	# omit the boring helping words (ex. 'I', 'to', 'a', etc.)
-	rants = ordered_freq_dict[230:300]		# stops at "after"
+	rants = ordered_freq_dict[230:240]		# stops at "after"
 	return rants	
+
+
+## put the list through a text to speech generator
+def speak(rant):
+	# length_rant = len(rant)
+	count = 0
+	# retrieves an mp3 file for every word in the list
+	for word in rant:
+		count += 1
+		url = 'http://tts-api.com/tts.mp3?q=' + word +'&return_url=1'
+		rant_word = urllib.URLopener()
+		rant_word.retrieve(url,'Rants/rant_word' + str(count) + '.mp3')
+
 
 omit_crap(file_names)
 word_freq()
 freq_dict = word_freq()
-print rants(freq_dict)
+rant = rants(freq_dict)
+speak(rant)
 
 # something visual to show LOUDEST RANTS
 	# output text of various sizes
