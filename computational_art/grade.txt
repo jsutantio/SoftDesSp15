@@ -1,0 +1,5 @@
+Functionality: 5/5, nice work!
+Documentation: 5/5, would have liked to see more explanation of the range remapping function checking the value it recieved.
+Style: 5/5, generally good. Use elif instead of if where appropriate!
+
+Lateness: 3 days late, so that's -60%, but it's forgiven if this is the latest thing you hand in!

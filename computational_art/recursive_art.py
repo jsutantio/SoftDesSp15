@@ -29,13 +29,19 @@ def build_random_function(min_depth, max_depth):
         return choice([['a'],['b']])
     if min_depth <= 0:
         # randomly decide whether or not to continue with recursion
-        contine_recurse = choice(['YES','NO'])
+        contine_recurse = choice(['YES','NO']) #True or False would probably be best in this situation. Then you could just do 'if continue_recurse'
         if contine_recurse == 'NO':
             return choice([['a'],['b']])
         else:
             return build_random_function(min_depth-1,max_depth-1)
 
     else:
+        #less convoluted way to do this than the one I originally told you! This way will let you have funcs with any num of inputs.
+        #funcs = [['cos_pi','arg'],['X','arg','arg'],['crazy_func_with_5_inputs','input','input','input','input','input']] etc.
+        #func = random.choice(funcs)
+        #for i in range(1,len(func)):
+        #    func[i] = build_random_function(build_random_function(min_depth-1,max_depth-1))
+        #return func
         function_type = choice(['one input','two input','two input'])
         if function_type == 'one input':
             function = choice(t)
@@ -128,6 +134,7 @@ def remap_interval(val, input_interval_start, input_interval_end, output_interva
         output_offset = 0 - output_interval_start
         val = scale*(output_interval_end+output_offset)
         return val - output_offset
+    #are these edge cases nessecary? If so, it'd be nice if you added doc tests demonstration where they were needed.
     if val == input_interval_start:
         return output_interval_start
     if val == input_interval_end:
