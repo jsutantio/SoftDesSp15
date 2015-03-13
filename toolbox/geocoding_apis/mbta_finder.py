@@ -15,6 +15,7 @@ import json
 # Useful URLs (you need to add the appropriate parameters for your requests)
 GMAPS_BASE_URL = "https://maps.googleapis.com/maps/api/geocode/json?address={}"
 MBTA_DEMO_API_KEY = "wX9NwuHnZU2ToO7GmGR9uw"
+MBTA_url = "http://realtime.mbta.com/developer/api/v2/stopsbylocation?api_key={}&lat={}&lon={}&format=json"
 
 
 def get_json(url):
@@ -24,7 +25,6 @@ def get_json(url):
     """
     f = urllib2.urlopen(url)
     response_text = f.read()
-    # print "response text: ", response_text
     response_data = json.loads(response_text)
     return response_data
 
@@ -32,43 +32,44 @@ def get_lat_long(place_name):
     """
     Given a place name or address, return a (latitude, longitude) tuple
     with the coordinates of the given place.
-
-    See https://developers.google.com/maps/documentation/geocoding/
-    for Google Maps Geocode API URL formatting requirements.
     """
     
     place_name_formatted = place_name.replace(" ","+")
-    print place_name_formatted
+    # add the queried location to the url
     GMAPSurl = GMAPS_BASE_URL.format(place_name_formatted)
     response_data = get_json(GMAPSurl)
-    (latitude, longitude) = response_data["results"][0]["geometry"]["location"]
-    
+    if response_data == {u'status': u'ZERO_RESULTS', u'results': []}:
+        print "Location brings up zero results."
+    else:
+        # look through the data for the long and lat
+        latitude = response_data["results"][0]["geometry"]["location"]["lat"]
+        longitude = response_data["results"][0]["geometry"]["location"]["lng"]
+        
     return latitude, longitude
-
 
 def get_nearest_station(latitude, longitude):
     """
     Given latitude and longitude strings, return a (station_name, distance)
     tuple for the nearest MBTA station to the given coordinates.
-
-    See http://realtime.mbta.com/Portal/Home/Documents for URL
-    formatting requirements for the 'stopsbylocation' API.
     """
     
-    MBTA_url = "http://realtime.mbta.com/developer/api/v2/stopsbylocation?api_key={}&lat={}&lon={}&format=json"
+    # add the API key, long and lat to the url
     MBTA_url_formatted = MBTA_url.format(MBTA_DEMO_API_KEY, latitude, longitude)
-    # print "MBTAurl: ", MBTA_url_formatted
     response_data = get_json(MBTA_url_formatted)
-    # station_name = response_data["stop"]
-
-    station_name = response_data["stop"][0]["stop_name"]
-    print "STATION NAME: ", station_name.encode("latin-1")
-    distance = response_data["stop"][0]["distance"]
-    print "DISTANCE(mi): ", distance.encode("latin-1")
+    
+    # check to see if the location is valid
+    if response_data == {u'stop': []}:
+        print "Location is not valid. Try typing the city or street name."
+    else:
+        # look through the data for the closest station (name and distance)
+        station_name = response_data["stop"][0]["stop_name"]
+        print "STATION NAME: ", station_name.encode("latin-1")
+        distance = response_data["stop"][0]["distance"]
+        print "DISTANCE(mi): ", distance.encode("latin-1")
 
 
 if __name__ == '__main__':
     
-    place_name = "Boston Public Library"
+    place_name = "Whole Foods Doyle Ave Providence RI"
     (latitude,longitude) = get_lat_long(place_name)
-    # get_nearest_station(42.349449,-71.077883)
+    get_nearest_station(latitude,longitude)
