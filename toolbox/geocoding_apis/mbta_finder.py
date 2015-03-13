@@ -70,6 +70,6 @@ def get_nearest_station(latitude, longitude):
 
 if __name__ == '__main__':
     
-    place_name = "Whole Foods Doyle Ave Providence RI"
+    place_name = "70 Line St Somerville"
     (latitude,longitude) = get_lat_long(place_name)
     get_nearest_station(latitude,longitude)
