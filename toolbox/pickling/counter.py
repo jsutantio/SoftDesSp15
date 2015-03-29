@@ -28,17 +28,21 @@ def update_counter(file_name, reset=False):
 	3
 	>>> update_counter('blah2.txt')
 	2
+	>>> update_counter('blah2.txt',True)
+	1
 	"""
 	
-	if exists(file_name):
+	if exists(file_name) and reset == False:
 		current_number = open(file_name, 'r+').read()
 		updated_number = int(current_number) + 1
 		existing_file = open(file_name, 'w')
-		return existing_file.write(str(updated_number))
+		existing_file.write(str(updated_number))
+		return updated_number
 
 	else:
 		new_file = open(file_name, 'w')
-		return new_file.write('1')
+		new_file.write('1')
+		return 1
 
 
 if __name__ == '__main__':
