@@ -33,18 +33,25 @@ beats_per_minute = 120				# Let's make a slow blues solo
 
 # add_note(solo, bass, blues_scale[0], 1.0, beats_per_minute, 1.0)
 
-curr_note = len(blues_scale)/2
+curr_note = 0
 # add_note(solo, bass, blues_scale[curr_note], 1.0, beats_per_minute, 1.0)
 
 licks = [ [(-1,0.5), (-1,0.5), (-1, 0.5), (-1, 0.5)], 
           [(-1,0.25), (-1,0.75), (-1, 0.25), (-1, 0.75)],
           [(1,0.5), (1,0.5), (1, 0.5), (1, 0.5)],
           [(1,0.25), (1,0.75), (1, 0.25), (1, 0.75)] ]
-for i in range(8):
+for i in range(9):
     lick = choice(licks)
     print lick
     for note in lick:
         curr_note += note[0]
+        if curr_note < 0:   # makes sure that the note doesn't get too low
+            curr_note += 5
+        if curr_note==0 or curr_note==(len(blues_scale)-1):    # holds lowest/ highest note
+            add_note(solo, bass, blues_scale[curr_note], 2, beats_per_minute, 1.0)
+        if curr_note > (len(blues_scale)-1):    # makes sure that the note doesn't get too high
+            curr_note -= 5
+
         add_note(solo, bass, blues_scale[curr_note], note[1], beats_per_minute, 1.0)
 
 solo >> "blues_solo.wav"
