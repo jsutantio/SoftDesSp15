@@ -1,0 +1,16 @@
+# Jessica Sutantio
+# Software Design-Machine Learning Toolbox
+
+Since I've removed the lines, I am basing my answers off the general trend of the points that have been plotted.
+
+1. What is the general trend in the curve?
+The trend of the points seem to linearly increase in accuracy on the tests as a highter percentage of data is used for training.
+
+2. Are there parts of the curve that appear to be noisier than others?
+Yes.
+
+3. How many trials do you need to get a smooth curve?
+The greater number of trials gives more accurate test sets. I've num_trials at [10,100,500, 100]. The points become more condensed with more trials. 500 trials gives a good profile.
+
+Try different values for C (by changing LogisticRegression(C=10**-10)).  What happens? 
+With a larger value of C, the points condense a lot. When C = .1, all data is used for training.
