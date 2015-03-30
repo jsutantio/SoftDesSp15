@@ -13,6 +13,7 @@ import urllib
 file_names = sorted(listdir('Therapy_Archives/'))
 ## combines all the archives and filters for only the essential text
 def omit_crap(file_names):
+#there's some really funky indenting going on here. Try to use only one tab for indents! 
 	outputfile = open('all_rants.txt','w')
 	week = ['sun','mon','tue','wed','thu','fri','sat']
 	year = ['jan','feb','mar','apr','may','jun','jul','aug','sep','oct','nov','dec']
@@ -27,6 +28,7 @@ def omit_crap(file_names):
 			if ('message-id' == line[:10]):
 				ranting = True
 				continue
+                        #nice use of continue here to avoid ridiculous amounts of nesting
 			
 			# cases that stop recording the body text
 			if ('from therapy' == line[:12]):		
@@ -77,7 +79,7 @@ def word_freq():
 			else:
 				freq_dict[word] = 1
 
-	return freq_dict
+        return freq_dict
 
 
 ## determine the most frequent words that are noteworthy
