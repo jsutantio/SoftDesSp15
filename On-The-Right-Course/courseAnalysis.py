@@ -2,6 +2,7 @@
 # Aditi Joshi and Jessica Sutantio
 # Software Design Final Project
 
+
 """ From all of the Olin registaration data, we will be creating a visualization 
 displaying the most commong courses taken during a student's Olin career. 
 Users will be able to filter the data so that they may visualize the informaiton 
@@ -16,6 +17,7 @@ import numpy as np
 
 # Name of data file
 file_name = 'course_enrollments_2002-2014spring_anonymized.csv'
+
 
 def course_time(academicStatus,academicYear):
     """
@@ -93,15 +95,52 @@ def get_df(file_name):
     return df
 
 
-def major_filter(df):
+def major_filter(df, major):
     """
     this method takes in each student's ID and their major. If their major is 
     undefined at any point, the function will take in the first major it finds
     for that ID 
+
+    ['Undeclared              ' 
+     'Mechanical Engineering  '
+     'Engineering             '
+     'Undeclared              Systems                 '
+     'Engineering             Systems                 '
+     'Undeclared              Computing               '
+     'Engineering             Computing               '
+     'Undeclared              Materials Science       '
+     'Mechanical Engineering  Materials Science       '
+     'Engineering             Materials Science       '
+     'Mechanical Engineering  Computing               '
+     'Undeclared              Bioengineering          '
+     'Engineering             Bioengineering          '
+     "Electr'l & Computer Engr"
+     'Undeclared              Self Designed           '
+     'Engineering             Self Designed           '
+     'Mechanical Engineering  Bioengineering          '
+     "Electr'l & Computer EngrComputing               "
+     "Electr'l & Computer EngrSystems                 "
+     'Mechanical Engineering  Systems                 '
+     'Mechanical Engineering  Self Designed           '
+     "Electr'l & Computer EngrSelf Designed           "
+     'Undeclared              Design                  '
+     'Mechanical Engineering  Design                  '
+     'Engineering             Design                  '
+     'Undeclared              Robotics                '
+     'Mechanical Engineering  Robotics                '
+     'Engineering             Robotics                '
+     'Exchange Student        Computing               '
+     "Electr'l & Computer EngrRobotics                "]
+
     """
+
+    # all majors that they can list from: ME, ECE, E:C, E:Robo, E:Bio, E:MatSci, E:Design, E:Systems
+    major_convert = {'ME': 'Mechanical Engineering  ', 'ECE': "Electr'l & Computer Engr", 'E:C': 'Engineering             Computing               ', 'E:Robo': 'Engineering             Robotics                ', 'E:Bio': 'Engineering             Bioengineering          ', 'E:MatSci': 'Engineering             Materials Science       ', 'E:Design': 'Engineering             Design                  ', 'E:Systems': 'Engineering             Systems                 '}
+    major = major_convert[major]
 
     # finds all the unique ids and all ids
     uniqueIDs = df.ID.unique()
+    uniquemajors = df.major.unique()
 
     # find the start and end indices of the unique IDs 
     for idNum in uniqueIDs:
@@ -112,22 +151,12 @@ def major_filter(df):
         # find the last updated major of the student
         latestMajor = df['major'][endID]
         # change all previous majors to be the same as last updated major
-        df['major'][startID:endID+1]= latestMajor  
-       
-    # # print df['major'][33]
-        
-    # for index in IDindex:
-    #     df['major'][startID:endID]='ME'
+        df.loc[startID:endID+1, 'major'] = latestMajor
 
+    # create a new dataframe that shows all data for only the specified major
+    major_df = df[df.major == major]
 
-    # REMEMBER THAT THE INDEX OF THE DF STARTS AT 0
-    # [start:end] = [0:33] for IDnum 602 (index 33 is not included)
-    # [33:52] for IDnum 537
-
-    # 602: Mechanical Engineering
-    # 537: Engineering
-
-    return df
+    return major_df
 
 
 def capped_percent(df, sem):
@@ -167,18 +196,6 @@ def capped_percent(df, sem):
     return capped_percents
 
 
-def add_percent_symbol(list_percent):
-    """
-    takes a list of the percentages and returns a list of the rounded #s with
-    the percent symbol
-    """
-    list_percentages = []
-    for element in list_percent:
-        list_percentages.append(str(int(element))+'%')
-
-    return list_percentages
-
-
 def df_to_list(df):
     """
     takes a dataframe and splits all the columns into separate lists
@@ -192,63 +209,127 @@ def df_to_list(df):
     return df_list
 
 
-def plot():
+def find_all_sem(df, major):
+    """
+    finds all of the semester capped percentages for a specific major 
+    and returns them as lists
+    """
+
+    df = major_filter(df, major)
+
+    sem1 = df_to_list(capped_percent(df, 1.0))
+    sem2 = df_to_list(capped_percent(df, 1.5))
+    sem3 = df_to_list(capped_percent(df, 2.0))
+    sem4 = df_to_list(capped_percent(df, 2.5))
+    sem5 = df_to_list(capped_percent(df, 3.0))
+    sem6 = df_to_list(capped_percent(df, 3.5))
+    sem7 = df_to_list(capped_percent(df, 4.0))
+    sem8 = df_to_list(capped_percent(df, 4.5))
+
+    return sem1, sem2, sem3, sem4, sem5, sem6, sem7, sem8
+
+
+def add_percent_symbol(list_percent):
+    """
+    takes a list of the percentages and returns a list of the rounded #s with
+    the percent symbol
+    """
+
+    list_percentages = []
+    for element in list_percent:
+        list_percentages.append(str(int(element))+'%')
+
+    return list_percentages
+
+
+def plot(sem1, sem2, sem3, sem4, sem5, sem6, sem7, sem8):
+
     trace1 = Bar(
-        x = df_to_list(capped_percent(get_df(file_name),1.0))[0],
-        y = df_to_list(capped_percent(get_df(file_name),1.0))[1],
+        x = sem1[0],
+        y = sem1[1],
         name='Sem 1',
         orientation='h'
         )
+
     trace2 = Bar(
-        x = df_to_list(capped_percent(get_df(file_name),1.5))[0],
-        y = df_to_list(capped_percent(get_df(file_name),1.5))[1],
+        x = sem2[0],
+        y = sem2[1],
         name='Sem 1.5',
         orientation='h'
         )
+
     trace3 = Bar(
-        x = df_to_list(capped_percent(get_df(file_name),2.0))[0],
-        y = df_to_list(capped_percent(get_df(file_name),2.0))[1],
+        x = sem3[0],
+        y = sem3[1],
         name='Sem 2.0',
         orientation='h'
         )
+
     trace4 = Bar(
-        x = df_to_list(capped_percent(get_df(file_name),2.5))[0],
-        y = df_to_list(capped_percent(get_df(file_name),2.5))[1],
+        x = sem4[0],
+        y = sem4[1],
         name='Sem 2.5',
         orientation='h'
         )
+
     trace5 = Bar(
-        x = df_to_list(capped_percent(get_df(file_name),3.0))[0],
-        y = df_to_list(capped_percent(get_df(file_name),3.0))[1],
+        x = sem5[0],
+        y = sem5[1],
         name='Sem 3.0',
         orientation='h'
         )
+
     trace6 = Bar(
-        x = df_to_list(capped_percent(get_df(file_name),3.5))[0],
-        y = df_to_list(capped_percent(get_df(file_name),3.5))[1],
+        x = sem6[0],
+        y = sem6[1],
         name='Sem 3.5',
         orientation='h'
         )
+
     trace7 = Bar(
-        x = df_to_list(capped_percent(get_df(file_name),4.0))[0],
-        y = df_to_list(capped_percent(get_df(file_name),4.0))[1],
+        x = sem7[0],
+        y = sem7[1],
         name='Sem 4.0',
         orientation='h'
         )
+
     trace8 = Bar(
-        x = df_to_list(capped_percent(get_df(file_name),4.5))[0],
-        y = df_to_list(capped_percent(get_df(file_name),4.5))[1],
+        x = sem8[0],
+        y = sem8[1],
         name='Sem 4.5',
         orientation='h'
         )
+
     data = Data([trace1, trace2, trace3, trace4, trace5, trace6, trace7, trace8])
+
     layout = Layout(
         barmode='group'
         )
+
     fig = Figure(data=data, layout=layout)
+
     plot_url = py.plot(fig, filename='grouped-bar')
 
+################################################### TYPES OF INPUTS
+"""
+0. Display all 8 semesters by default
+    Dropdown list will filter by major and semester
+    1. If filter by major
+    > display all 8 semesters for the major
+        1a. If filter by semester
+        > display to 10 courses (zoom in) for the major
+    2. If filter by semester
+    > display top 10 courses (zoom in)
+        2a. If filter by major
+        > change top 10 courses to be major specific
+
+Always output top 10 course list by percentage
+
+"""
+
 if __name__ == '__main__':
-    df_to_list(capped_percent(get_df(file_name),1.0))
-    print major_filter(get_df(file_name))
-    # plot()
+    df = get_df(file_name)
+
+    sem1, sem2, sem3, sem4, sem5, sem6, sem7, sem8 = find_all_sem(df, 'ME')
+
+    plot(sem1, sem2, sem3, sem4, sem5, sem6, sem7, sem8)
